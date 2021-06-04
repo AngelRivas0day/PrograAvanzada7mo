@@ -1,0 +1,144 @@
+﻿@using Entities
+@using Business
+
+@inject NavigationManager NavManager
+
+<div class="form-container" style="max-width: 500px; margin: 0 auto; display: block;">
+    <EditForm Model="oPermiso">
+        <div class="form-group">
+            <label>Tipo de permiso</label>
+            <InputSelect @oninput="OnChangeType" @bind-Value="oPermiso.PermisoTipo" class="form-control">
+                <option>Selecciona una opcion</option>
+                <option value="2 horas">2 horas</option>
+                <option value="Economico">Economico</option>
+                <option value="Cumpleanios">Cumplea&ntilde;os</option>
+            </InputSelect>
+        </div>
+        <div class="form-group">
+            <label>Fecha de elaboraci&oacute;n</label>
+            <InputDate type="date" @bind-Value="oPermiso.PermisoFechaElaboracion" class="form-control" disabled />
+        </div>
+        @if (types.Contains(oPermiso.PermisoTipo, StringComparer.OrdinalIgnoreCase))
+        {
+            <div class="form-group">
+                <label>Fecha de aplicaci&oacute;n</label>
+                <InputDate type="date" @oninput="OnChangeApplicationDate" @bind-Value="oPermiso.PermisoFechaAplicacion" class="form-control" />
+            </div>
+            @if (oPermiso.PermisoTipo == "2 horas")
+            {
+                <div class="form-group">
+                    <label>Hora de aplicaci&oacute;n</label>
+                    <select @onchange="OnChangeTime" value="@applicationTime" class="form-control">
+                       @foreach(var hour in hours)
+                        {
+                            <option value="@hour">@hour horas</option>
+                        }
+                    </select>
+                </div>
+            }
+            <div class="form-group">
+                <label>Fecha de finalizaci&oacute;n</label>
+                <InputDate type="date" @bind-Value="oPermiso.PermisoFechaFinalizacion" class="form-control" disabled />
+            </div>
+            @if (oPermiso.PermisoTipo == "2 horas")
+            {
+                <div class="form-group">
+                    <label>Hora de finalizaci&oacute;n</label>
+                    <select class="form-control" value="@finalizationTime" disabled>
+                       @foreach (var hour in hours)
+                        {
+                            <option value="@hour">@hour horas</option>
+                        }
+                    </select>
+                </div>
+            }
+        }
+        <input class="btn btn-primary" type="submit" value="Solicitar permiso" @onclick="CreatePermiso" />
+    </EditForm>
+    @*@message
+    @applicationTime
+    @finalizationTime*@
+</div>
+
+
+@code {
+
+    PermisoEntity oPermiso = new PermisoEntity();
+    public string message = "lmao";
+    public string[] types = { "2 horas", "Cumpleanios", "Economico" };
+    public string[] hours = { "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00" };
+    public string applicationTime = "";
+    public string finalizationTime = "";
+    protected override void OnInitialized()
+    {
+        oPermiso.PermisoFechaElaboracion = DateTime.Now;
+        oPermiso.PermisoFechaAplicacion = DateTime.Now;
+        oPermiso.TrabajadorId = "106";
+        applicationTime = hours[0];
+        finalizationTime = hours[2];
+    }
+
+    private void CreatePermiso()
+    {
+        if(oPermiso.PermisoTipo == "2 horas")
+        {
+            // Obtenemos los primeros dos numeros del string que representa la hora e.g 17:00 => 17
+            var startHours = applicationTime.Split(':')[0];
+            var endHours = finalizationTime.Split(':')[0];
+            // Agregamos la cantidad de horas correspondientes a las fechas de aplicacion y fechas de cierre con la funcion .AddHours
+            oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(oPermiso.PermisoFechaFinalizacion).AddHours(Double.Parse(endHours));
+            oPermiso.PermisoFechaAplicacion = Convert.ToDateTime(oPermiso.PermisoFechaAplicacion).AddHours(Double.Parse(startHours));
+        }
+        // Ponemos el estado del permiso en pendiente por defecto al momento de ser creado
+        oPermiso.PermisoEstado = "PENDIENTE";
+        B_Permiso.CrearPermiso(oPermiso);
+        // Redirigimos al usuario a al listado de permisos
+        NavManager.NavigateTo("permisos/list");
+    }
+
+    private void OnChangeType(ChangeEventArgs e)
+    {
+        if(e.Value.ToString() == "Economico")
+        {
+            oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaAplicacion.AddDays(2);
+        }
+        if (e.Value.ToString() == "Cumpleanios")
+        {
+            oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaAplicacion.AddDays(1);
+        }
+        if (e.Value.ToString() == "2 horas")
+        {
+            oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaAplicacion.AddHours(2);
+        }
+    }
+
+    private void OnChangeApplicationDate(ChangeEventArgs e)
+    {
+        if (oPermiso.PermisoTipo == "Economico")
+        {
+            oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddDays(2);
+        }
+        if (oPermiso.PermisoTipo == "Cumpleanios")
+        {
+            oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddDays(1);
+        }
+        if (oPermiso.PermisoTipo == "2 horas")
+        {
+            oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddHours(2);
+        }
+    }
+
+    private void OnChangeTime(ChangeEventArgs e)
+    {
+        var currentIndex = Array.IndexOf(hours, e.Value.ToString());
+        if(hours.Length - 1 > currentIndex + 2)
+        {
+            finalizationTime = hours[currentIndex + 2];
+        }
+        else
+        {
+            finalizationTime = hours[hours.Length - 1];
+        }
+
+    }
+}
