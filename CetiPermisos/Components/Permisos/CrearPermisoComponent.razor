@@ -106,7 +106,6 @@
 
     private bool ValidarPorTipoDePermiso()
     {
-
         // validaciones y procesos para permiso de cumpleaños
         if (oPermiso.PermisoTipo == "Cumpleanios")
         {
@@ -121,6 +120,13 @@
             if (applicationDate < currentBirthday) { return false; }
             // si la fecha de aplicacion sigue siendo mas grande que el cumpleaños + 6 meses, salimos de la función
             if (currentBirthday.AddMonths(6) < applicationDate) { return false; }
+        }
+        if (oPermiso.PermisoTipo == "Economico")
+        {
+            DateTime applicationDate = oPermiso.PermisoFechaAplicacion;
+            DateTime elaborationDate = oPermiso.PermisoFechaElaboracion;
+            // validar que tenga por lo menos dos dias de diferencia la fecha de aplicacion y la de elaboracion
+            if (elaborationDate.AddDays(2) > applicationDate) { return false; }
         }
         return true;
     }
@@ -181,46 +187,29 @@
     private void OnChangeType(ChangeEventArgs e)
     {
         if(e.Value.ToString() == "Economico")
-        {
             oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaAplicacion.AddDays(2);
-        }
         if (e.Value.ToString() == "Cumpleanios")
-        {
             oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaAplicacion.AddDays(1);
-        }
         if (e.Value.ToString() == "2 horas")
-        {
             oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaAplicacion.AddHours(2);
-        }
     }
 
     private void OnChangeApplicationDate(ChangeEventArgs e)
     {
         if (oPermiso.PermisoTipo == "Economico")
-        {
             oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddDays(2);
-        }
         if (oPermiso.PermisoTipo == "Cumpleanios")
-        {
             oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddDays(1);
-        }
         if (oPermiso.PermisoTipo == "2 horas")
-        {
             oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddHours(2);
-        }
     }
 
     private void OnChangeTime(ChangeEventArgs e)
     {
         var currentIndex = Array.IndexOf(hours, e.Value.ToString());
         if(currentIndex == 0)
-        {
             finalizationTime = "09:00";
-        }
         else if(currentIndex == 1)
-        {
             finalizationTime = "15:00";
-        }
-
     }
 }
