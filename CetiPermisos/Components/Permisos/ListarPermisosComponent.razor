@@ -1,6 +1,10 @@
 ﻿@using Entities
 @using Business
 
+<a href="permisos/crear" class="btn btn-primary">Crear permiso</a>
+
+<hr/>
+
 <table class="table table-hover table-boder">
     <thead>
         <tr>
@@ -15,7 +19,7 @@
         </tr>
     </thead>
     <tbody>
-       @foreach(var permiso in permisos)
+        @foreach (var permiso in permisos)
         {
             <tr>
                 <th>@permiso.PermisoId</th>
@@ -25,7 +29,7 @@
                 <td>@permiso.PermisoFechaFinalizacion</td>
                 <td>@permiso.Trabajador.TrabajadorNombre @permiso.Trabajador.TrabajadorApPaterno</td>
                 <td>
-                   @if (permiso.JefeInmediatoId > 0)
+                    @if (permiso.JefeInmediatoId > 0)
                     {
                         @permiso.JefeInmediatio.TrabajadorNombre @permiso.JefeInmediatio.TrabajadorApPaterno
                     }
@@ -42,6 +46,7 @@
         }
     </tbody>
 </table>
+
 
 @code {
     [Parameter]

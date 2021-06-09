@@ -41,7 +41,9 @@ namespace Entities
         [StringLength(30)]
         public string TrabajadorEmail { get; set; }
 
-        //[Required]
+        [Required]
+        public DateTime TrabajadorFechaNacimiento { get; set; }
+
         [MaxLength(11)]
         public int PlantelId { get; set; }
         public PlantelEntity Plantel { get; set; }

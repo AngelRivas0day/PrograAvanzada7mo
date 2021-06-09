@@ -10,6 +10,9 @@ namespace Entities
         [MaxLength(11)]
         public int PuestoId { get; set; }
 
+        [Required]
+        public DateTime PlazaFechaInicio { get; set; }
+
         [StringLength(11)]
         public string TrabajadorId { get; set; }
         public TrabajadorEntity Trabajador { get; set; }

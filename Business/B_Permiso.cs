@@ -17,11 +17,18 @@ namespace Business
                 .Include(p => p.JefeInmediatio)
                 .ToList();
         }
-
         public static PermisoEntity PermisoPorId(int Id)
         {
             using var db = new CetiContext();
             return db.Permisos.ToList().LastOrDefault(p => p.PermisoId == Id);
+        }
+        public static List<PermisoEntity> PermisosPorTrabajador(string Nomina)
+        {
+            using var db = new CetiContext();
+            return db.Permisos
+                .Where(p => p.TrabajadorId == Nomina)
+                .OrderByDescending(p => p.PermisoFechaAplicacion)
+                .ToList();
         }
         public static void CrearPermiso(PermisoEntity oPermiso)
         {
