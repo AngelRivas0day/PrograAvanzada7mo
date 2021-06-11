@@ -61,15 +61,15 @@
         oPermiso = B_Permiso.PermisoPorId(Convert.ToInt32(PermisoId));
         if(oPermiso.PermisoTipo == "2 horas")
         {
-            applicationTime = Convert.ToDateTime(oPermiso.PermisoFechaAplicacion).ToString("HH: mm:ss");
-            finalizationTime = Convert.ToDateTime(oPermiso.PermisoFechaFinalizacion).ToString("HH: mm:ss");
+            applicationTime = Convert.ToDateTime(oPermiso.PermisoFechaAplicacion).ToString("HH:mm:ss");
+            finalizationTime = Convert.ToDateTime(oPermiso.PermisoFechaFinalizacion).ToString("HH:mm:ss");
 
         }
     }
 
     private void AceptarPermiso()
     {
-        oPermiso.JefeInmediatoId = 836;
+        oPermiso.JefeInmediatoId = 1;
         oPermiso.PermisoEstado = "ACEPTADO";
         B_Permiso.ActualizarPermiso(oPermiso);
         NavManager.NavigateTo("permisos/lista");
@@ -77,7 +77,7 @@
 
     private void RechazarPermiso()
     {
-        oPermiso.JefeInmediatoId = 836;
+        oPermiso.JefeInmediatoId = 1;
         oPermiso.PermisoEstado = "RECHAZADO";
         B_Permiso.ActualizarPermiso(oPermiso);
         NavManager.NavigateTo("permisos/lista");

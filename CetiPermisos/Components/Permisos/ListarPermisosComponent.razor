@@ -2,7 +2,7 @@
 @using Business
 
 
-@if (permisos.ToArray().Length != 0)
+@if (permisos.ToArray().Length >= 0)
 {
    @if (trabajador.Plaza.PlazaTipo == "fija")
     {
@@ -36,11 +36,11 @@
                 <td>
                     @if (permiso.JefeInmediatoId > 0)
                     {
-                        @permiso.JefeInmediatio.TrabajadorNombre <span>&nbsp;</span> @permiso.JefeInmediatio.TrabajadorApPaterno
+                        @permiso.JefeInmediato.Trabajador.TrabajadorNombre <span>&nbsp;</span> @permiso.JefeInmediato.Trabajador.TrabajadorApPaterno
                     }
                     else
                     {
-                        <span>PENDIENTE</span>
+                        <span>-</span>
                     }
                 </td>
                 <td>@permiso.PermisoEstado</td>

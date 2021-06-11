@@ -35,8 +35,8 @@ namespace Entities
         public TrabajadorEntity Trabajador { get; set; }
 
         [MaxLength(11)]
-        public int JefeInmediatoId { get; set; }
-        public TrabajadorEntity JefeInmediatio { get; set; }
+        public int? JefeInmediatoId { get; set; }
+        public JefeEntity JefeInmediato { get; set; }
 
     }
 }

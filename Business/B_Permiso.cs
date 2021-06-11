@@ -14,7 +14,7 @@ namespace Business
             using var db = new CetiContext();
             return db.Permisos
                 .Include(p => p.Trabajador)
-                .Include(p => p.JefeInmediatio)
+                .Include(p => p.JefeInmediato).ThenInclude(jefe => jefe.Trabajador)
                 .ToList();
         }
         public static PermisoEntity PermisoPorId(int Id)
@@ -27,7 +27,7 @@ namespace Business
             using var db = new CetiContext();
             return db.Permisos
                 .Include(p => p.Trabajador)
-                .Include(p => p.JefeInmediatio)
+                .Include(p => p.JefeInmediato).ThenInclude(jefe => jefe.Trabajador)
                 .Where(p => p.TrabajadorId == Nomina)
                 .OrderByDescending(p => p.PermisoFechaAplicacion)
                 .ToList();

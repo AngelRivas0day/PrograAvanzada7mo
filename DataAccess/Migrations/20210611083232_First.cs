@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccess.Migrations
 {
-    public partial class FirstMigration : Migration
+    public partial class First : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -83,6 +83,7 @@ namespace DataAccess.Migrations
                     TrabajadorTelefono = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     TrabajadorCelular = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     TrabajadorEmail = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    TrabajadorFechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PlantelId = table.Column<int>(type: "int", maxLength: 11, nullable: false),
                     DireccionId = table.Column<int>(type: "int", maxLength: 11, nullable: false),
                     PlazaId = table.Column<int>(type: "int", maxLength: 11, nullable: false)
@@ -117,7 +118,7 @@ namespace DataAccess.Migrations
                     JefeId = table.Column<int>(type: "int", maxLength: 11, nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AcademiaId = table.Column<int>(type: "int", maxLength: 11, nullable: false),
-                    TrabajadorId = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: true)
+                    TrabajadorId = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,37 +134,6 @@ namespace DataAccess.Migrations
                         column: x => x.TrabajadorId,
                         principalTable: "Trabajadores",
                         principalColumn: "TrabajadorNomina",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Permisos",
-                columns: table => new
-                {
-                    PermisoId = table.Column<int>(type: "int", maxLength: 11, nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PermisoTipo = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    PermisoFechaElaboracion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PermisoFechaAplicacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PermisoFechaFinalizacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TrabajadorId = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    JefeInmediatoId = table.Column<int>(type: "int", maxLength: 11, nullable: false),
-                    PermisoEstado = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Permisos", x => x.PermisoId);
-                    table.ForeignKey(
-                        name: "FK_Permisos_Trabajadores_JefeInmediatoId",
-                        column: x => x.JefeInmediatoId,
-                        principalTable: "Trabajadores",
-                        principalColumn: "TrabajadorNomina",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Permisos_Trabajadores_TrabajadorId",
-                        column: x => x.TrabajadorId,
-                        principalTable: "Trabajadores",
-                        principalColumn: "TrabajadorNomina",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -173,6 +143,7 @@ namespace DataAccess.Migrations
                 {
                     PuestoId = table.Column<int>(type: "int", maxLength: 11, nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    PlazaFechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TrabajadorId = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: true),
                     AcademiaId = table.Column<int>(type: "int", maxLength: 11, nullable: false)
                 },
@@ -191,6 +162,38 @@ namespace DataAccess.Migrations
                         principalTable: "Trabajadores",
                         principalColumn: "TrabajadorNomina",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Permisos",
+                columns: table => new
+                {
+                    PermisoId = table.Column<int>(type: "int", maxLength: 11, nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PermisoTipo = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    PermisoFechaElaboracion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PermisoFechaAplicacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PermisoFechaFinalizacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PermisoMotivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PermisoEstado = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    TrabajadorId = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    JefeInmediatoId = table.Column<int>(type: "int", maxLength: 11, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permisos", x => x.PermisoId);
+                    table.ForeignKey(
+                        name: "FK_Permisos_Jefes_JefeInmediatoId",
+                        column: x => x.JefeInmediatoId,
+                        principalTable: "Jefes",
+                        principalColumn: "JefeId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Permisos_Trabajadores_TrabajadorId",
+                        column: x => x.TrabajadorId,
+                        principalTable: "Trabajadores",
+                        principalColumn: "TrabajadorNomina",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -255,25 +258,25 @@ namespace DataAccess.Migrations
 
             migrationBuilder.InsertData(
                 table: "Trabajadores",
-                columns: new[] { "TrabajadorNomina", "DireccionId", "PlantelId", "PlazaId", "TrabajadorApMaterno", "TrabajadorApPaterno", "TrabajadorCelular", "TrabajadorCurp", "TrabajadorEmail", "TrabajadorNombre", "TrabajadorRegistro", "TrabajadorTelefono" },
+                columns: new[] { "TrabajadorNomina", "DireccionId", "PlantelId", "PlazaId", "TrabajadorApMaterno", "TrabajadorApPaterno", "TrabajadorCelular", "TrabajadorCurp", "TrabajadorEmail", "TrabajadorFechaNacimiento", "TrabajadorNombre", "TrabajadorRegistro", "TrabajadorTelefono" },
                 values: new object[,]
                 {
-                    { "836", 4, 1, 1, "GONZÁLEZ", "GÓMEZ", "3345678901", "XEXX010101MNEXXXA8", "zbins@mills.biz", "YESENIA", "ca6c0f89-b245-4d34-981c-1fb798deb57a", "3318826414" },
-                    { "520", 5, 1, 1, "LOZANO", "ABRAHAM", "3391176908", "XEXX010101HNEXXXA4", "mmoore@gmail.com", "AKIRA", "71eff5e4-0484-4922-aa46-5ea1d77d961f", "3372586983" },
-                    { "969", 6, 1, 1, "HERNÁNDEZ", "FERRER", "3332185477", "XEXX010101MNEXXXA8", "josiah.pacocha@gmail.com", "SUSANA ELIZABETH", "1b137edc-1f36-474e-8983-73231eeaceb6", "3319871231" },
-                    { "662", 7, 1, 1, "HERNÁNDEZ", "FERRER", "3333244215", "XEXX010101MNEXXXA8", "stoltenberg.keshawn@yahoo.com", "SUSANA ELIZABETH", "335593c5-6746-4a98-879a-2e36be1f2df5", "3361564758" },
-                    { "870", 8, 1, 1, "DAMIAN", "GARCÍA", "3390971710", "XEXX010101HNEXXXA4", "piper33@block.org", "JUAN MANUEL", "5d250823-0b6c-4f71-9472-30b9d3410836", "3389908711" },
-                    { "142", 9, 2, 1, "COLIN", "SANTANA", "3387144259", "XEXX010101HNEXXXA4", "pbalistreri@gmail.com", "CARLOS TOMAS", "035a43a6-011f-4bc4-be19-0cdd70c3e2a5", "3312160223" },
-                    { "106", 10, 2, 1, "OYARZABAL", "PLAZA", "3341024910", "XEXX010101HNEXXXA4", "benedict73@yahoo.com", "ERNESTO ALEJANDRO", "7e9a183f-95b2-4266-9fcf-894c2b9b798d", "3363713078" },
-                    { "728", 11, 2, 1, "GÓMEZ", "VARGAS", "3347681797", "XEXX010101MNEXXXA8", "abigayle.mann@gmail.com", "AGUSTINA", "88f7c416-19c1-4f6f-a917-8960e73942c8", "3347681797" },
-                    { "861", 12, 2, 1, "CANTÚ", "GÁNDARA", "3301261506", "XEXX010101MNEXXXA8", "eddie.prosacco@will.com", "LOURDES", "1b5aaa54-0b8b-4368-9c9f-071b7ff8f2d8", "3344970611" },
-                    { "675", 13, 2, 1, "GONZÁLEZ", "LOZANO", "3315038946", "XEXX010101HNEXXXA4", "purdy.leonora@hudson.com", "ANTONIO", "f6f2941f-75a7-4d1b-a1d3-3d5aaef6478d", "3392928159" },
-                    { "972", 14, 3, 1, "DURÁN", "GARCÍA", "3317914443", "XEXX010101MNEXXXA8", "frami.terence@dubuque.com", "CLARA GABRIELA", "4009f5a3-8f7d-42d0-8aa5-cdc0e022999d", "3339752838" },
-                    { "779", 15, 3, 1, "CAMPA", "PAMPLONA", "3326431305", "XEXX010101HNEXXXA4", "bradtke.torrey@yahoo.com", "JORGE", "df208e57-9be7-4759-aaf5-dba983141aff", "3320068241" },
-                    { "656", 16, 3, 1, "TORRES", "IBAÑEZ", "3330028955", "XEXX010101MNEXXXA8", "thora.hirthe@gmail.com", "SONIA ERIKA", "d973208a-cf8a-4f5b-852a-335886d8f785", "3307889594" },
-                    { "991", 17, 3, 1, "TORRES", "ALCARAZ", "3361607678", "XEXX010101MNEXXXA8", "vicenta72@gmail.com", "ALEJANDRA", "ae214ded-afdf-4187-a962-7f670b93b366", "3379836327" },
-                    { "669", 18, 3, 1, "CARGÍA", "CORNEJO", "3345559416", "XEXX010101MNEXXXA8", "xgoodwin@schinner.com", "MARTHA", "38a905b4-4b33-4846-b645-60b3a7df3557", "3330112050" },
-                    { "500", 19, 3, 1, "DELGADO", "BECERRA", "3370661957", "XEXX010101HNEXXXA4", "nelson45@yahoo.com", "SERGIO", "a9ce51df-1908-46ff-bba7-b73b747a014b", "3348810059" }
+                    { "836", 4, 1, 1, "GONZÁLEZ", "GÓMEZ", "3345678901", "XEXX010101MNEXXXA8", "zbins@mills.biz", new DateTime(1976, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "YESENIA", "0706901f-30a4-433e-908b-9505279e4115", "3318826414" },
+                    { "520", 5, 1, 1, "LOZANO", "ABRAHAM", "3391176908", "XEXX010101HNEXXXA4", "mmoore@gmail.com", new DateTime(1982, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "AKIRA", "c4e70ee4-49cd-49b7-b8fd-980ba8093138", "3372586983" },
+                    { "969", 6, 1, 1, "HERNÁNDEZ", "FERRER", "3332185477", "XEXX010101MNEXXXA8", "josiah.pacocha@gmail.com", new DateTime(1983, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "SUSANA ELIZABETH", "9c4976f2-b47f-4e67-b753-096de2c672e2", "3319871231" },
+                    { "662", 7, 1, 1, "HERNÁNDEZ", "FERRER", "3333244215", "XEXX010101MNEXXXA8", "stoltenberg.keshawn@yahoo.com", new DateTime(1984, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "SUSANA ELIZABETH", "96b9eb48-cf6c-48b7-b862-8398ef2e8800", "3361564758" },
+                    { "870", 8, 1, 1, "DAMIAN", "GARCÍA", "3390971710", "XEXX010101HNEXXXA4", "piper33@block.org", new DateTime(1985, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "JUAN MANUEL", "8b28a9da-168c-4acf-ad1b-ce919991069a", "3389908711" },
+                    { "142", 9, 2, 1, "COLIN", "SANTANA", "3387144259", "XEXX010101HNEXXXA4", "pbalistreri@gmail.com", new DateTime(1986, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "CARLOS TOMAS", "873486d1-38fd-4478-9657-130c220d0605", "3312160223" },
+                    { "106", 10, 2, 1, "OYARZABAL", "PLAZA", "3341024910", "XEXX010101HNEXXXA4", "benedict73@yahoo.com", new DateTime(1987, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "ERNESTO ALEJANDRO", "ff64d681-4335-4287-8d1c-9edac64dd6d3", "3363713078" },
+                    { "728", 11, 2, 1, "GÓMEZ", "VARGAS", "3347681797", "XEXX010101MNEXXXA8", "abigayle.mann@gmail.com", new DateTime(1988, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "AGUSTINA", "801cf1ed-cfc0-4414-a09d-2fe1723af290", "3347681797" },
+                    { "861", 12, 2, 1, "CANTÚ", "GÁNDARA", "3301261506", "XEXX010101MNEXXXA8", "eddie.prosacco@will.com", new DateTime(1989, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "LOURDES", "4c6f2ba3-3799-4a75-8a12-f6ed4cce66b7", "3344970611" },
+                    { "675", 13, 2, 1, "GONZÁLEZ", "LOZANO", "3315038946", "XEXX010101HNEXXXA4", "purdy.leonora@hudson.com", new DateTime(1979, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "ANTONIO", "852e076c-1f06-448d-83f4-8cb4b79109b9", "3392928159" },
+                    { "972", 14, 3, 1, "DURÁN", "GARCÍA", "3317914443", "XEXX010101MNEXXXA8", "frami.terence@dubuque.com", new DateTime(1977, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "CLARA GABRIELA", "4ed7576b-a77d-4f4d-8424-ac3f04422d9b", "3339752838" },
+                    { "779", 15, 3, 1, "CAMPA", "PAMPLONA", "3326431305", "XEXX010101HNEXXXA4", "bradtke.torrey@yahoo.com", new DateTime(1978, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "JORGE", "3e1b7bd9-d146-4b94-bae0-8ca41fbf6a84", "3320068241" },
+                    { "656", 16, 3, 1, "TORRES", "IBAÑEZ", "3330028955", "XEXX010101MNEXXXA8", "thora.hirthe@gmail.com", new DateTime(1982, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "SONIA ERIKA", "fa674223-72f5-4657-8fa7-e464737c35e9", "3307889594" },
+                    { "991", 17, 3, 1, "TORRES", "ALCARAZ", "3361607678", "XEXX010101MNEXXXA8", "vicenta72@gmail.com", new DateTime(1980, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "ALEJANDRA", "1cdecc73-47a4-4c20-9ec6-1931053da335", "3379836327" },
+                    { "669", 18, 3, 1, "CARGÍA", "CORNEJO", "3345559416", "XEXX010101MNEXXXA8", "xgoodwin@schinner.com", new DateTime(1970, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "MARTHA", "9d9435a8-103c-4349-bcec-7443a44a581d", "3330112050" },
+                    { "500", 19, 3, 1, "DELGADO", "BECERRA", "3370661957", "XEXX010101HNEXXXA4", "nelson45@yahoo.com", new DateTime(1996, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "SERGIO", "4d42ce0f-7b27-4d57-b895-31159f9cadb4", "3348810059" }
                 });
 
             migrationBuilder.InsertData(
@@ -288,25 +291,25 @@ namespace DataAccess.Migrations
 
             migrationBuilder.InsertData(
                 table: "Puestos",
-                columns: new[] { "PuestoId", "AcademiaId", "TrabajadorId" },
+                columns: new[] { "PuestoId", "AcademiaId", "PlazaFechaInicio", "TrabajadorId" },
                 values: new object[,]
                 {
-                    { 15, 3, "669" },
-                    { 14, 3, "991" },
-                    { 13, 3, "656" },
-                    { 12, 3, "779" },
-                    { 11, 3, "972" },
-                    { 10, 2, "675" },
-                    { 9, 2, "861" },
-                    { 8, 2, "728" },
-                    { 6, 2, "142" },
-                    { 5, 1, "870" },
-                    { 4, 1, "662" },
-                    { 3, 1, "969" },
-                    { 2, 1, "520" },
-                    { 1, 1, "836" },
-                    { 7, 2, "106" },
-                    { 16, 3, "500" }
+                    { 15, 3, new DateTime(2014, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "669" },
+                    { 14, 3, new DateTime(2013, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "991" },
+                    { 13, 3, new DateTime(2012, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "656" },
+                    { 12, 3, new DateTime(2011, 6, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "779" },
+                    { 11, 3, new DateTime(2010, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "972" },
+                    { 10, 2, new DateTime(2009, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "675" },
+                    { 9, 2, new DateTime(2008, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "861" },
+                    { 8, 2, new DateTime(2007, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "728" },
+                    { 6, 2, new DateTime(2005, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "142" },
+                    { 5, 1, new DateTime(2004, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "870" },
+                    { 4, 1, new DateTime(2003, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "662" },
+                    { 3, 1, new DateTime(2002, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "969" },
+                    { 2, 1, new DateTime(2001, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "520" },
+                    { 1, 1, new DateTime(2000, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "836" },
+                    { 7, 2, new DateTime(2006, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "106" },
+                    { 16, 3, new DateTime(2015, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "500" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -320,9 +323,9 @@ namespace DataAccess.Migrations
                 column: "TrabajadorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permisos_JefeInmediatioTrabajadorNomina",
+                name: "IX_Permisos_JefeInmediatoId",
                 table: "Permisos",
-                column: "JefeInmediatioTrabajadorNomina");
+                column: "JefeInmediatoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Permisos_TrabajadorId",
@@ -363,13 +366,13 @@ namespace DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Jefes");
-
-            migrationBuilder.DropTable(
                 name: "Permisos");
 
             migrationBuilder.DropTable(
                 name: "Puestos");
+
+            migrationBuilder.DropTable(
+                name: "Jefes");
 
             migrationBuilder.DropTable(
                 name: "Academias");

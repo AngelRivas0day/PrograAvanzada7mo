@@ -15,9 +15,10 @@ namespace Entities
         public int AcademiaId { get; set; }
         public AcademiaEntity Academia { get; set; }
 
-        //[Required]
+        [Required]
         [StringLength(11)]
         public string TrabajadorId { get; set; }
         public TrabajadorEntity Trabajador { get; set; }
+
     }
 }

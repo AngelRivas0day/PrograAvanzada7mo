@@ -272,6 +272,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TrabajadorId")
+                        .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
@@ -312,10 +313,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("JefeInmediatioTrabajadorNomina")
-                        .HasColumnType("nvarchar(11)");
-
-                    b.Property<int>("JefeInmediatoId")
+                    b.Property<int?>("JefeInmediatoId")
                         .HasMaxLength(11)
                         .HasColumnType("int");
 
@@ -349,7 +347,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("PermisoId");
 
-                    b.HasIndex("JefeInmediatioTrabajadorNomina");
+                    b.HasIndex("JefeInmediatoId");
 
                     b.HasIndex("TrabajadorId");
 
@@ -656,7 +654,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "zbins@mills.biz",
                             TrabajadorFechaNacimiento = new DateTime(1976, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "YESENIA",
-                            TrabajadorRegistro = "fcf6dd1b-c55a-4da2-8512-ccaf7c476833",
+                            TrabajadorRegistro = "0706901f-30a4-433e-908b-9505279e4115",
                             TrabajadorTelefono = "3318826414"
                         },
                         new
@@ -672,7 +670,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "mmoore@gmail.com",
                             TrabajadorFechaNacimiento = new DateTime(1982, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "AKIRA",
-                            TrabajadorRegistro = "8c4b20e1-11ba-4015-bd14-9d80db2a940e",
+                            TrabajadorRegistro = "c4e70ee4-49cd-49b7-b8fd-980ba8093138",
                             TrabajadorTelefono = "3372586983"
                         },
                         new
@@ -688,7 +686,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "josiah.pacocha@gmail.com",
                             TrabajadorFechaNacimiento = new DateTime(1983, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "SUSANA ELIZABETH",
-                            TrabajadorRegistro = "e562d8bb-5421-4808-8b8f-d1fbfc890d24",
+                            TrabajadorRegistro = "9c4976f2-b47f-4e67-b753-096de2c672e2",
                             TrabajadorTelefono = "3319871231"
                         },
                         new
@@ -704,7 +702,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "stoltenberg.keshawn@yahoo.com",
                             TrabajadorFechaNacimiento = new DateTime(1984, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "SUSANA ELIZABETH",
-                            TrabajadorRegistro = "2889b864-1153-4420-a97e-8250e6b8498b",
+                            TrabajadorRegistro = "96b9eb48-cf6c-48b7-b862-8398ef2e8800",
                             TrabajadorTelefono = "3361564758"
                         },
                         new
@@ -720,7 +718,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "piper33@block.org",
                             TrabajadorFechaNacimiento = new DateTime(1985, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "JUAN MANUEL",
-                            TrabajadorRegistro = "562bbc9e-915b-4ac3-b6e0-3a851d0a0081",
+                            TrabajadorRegistro = "8b28a9da-168c-4acf-ad1b-ce919991069a",
                             TrabajadorTelefono = "3389908711"
                         },
                         new
@@ -736,7 +734,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "pbalistreri@gmail.com",
                             TrabajadorFechaNacimiento = new DateTime(1986, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "CARLOS TOMAS",
-                            TrabajadorRegistro = "68815feb-f350-4f19-b495-4acbfb83a959",
+                            TrabajadorRegistro = "873486d1-38fd-4478-9657-130c220d0605",
                             TrabajadorTelefono = "3312160223"
                         },
                         new
@@ -752,7 +750,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "benedict73@yahoo.com",
                             TrabajadorFechaNacimiento = new DateTime(1987, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "ERNESTO ALEJANDRO",
-                            TrabajadorRegistro = "74ed4e26-c24e-42b5-96cc-e1e2cef9d06c",
+                            TrabajadorRegistro = "ff64d681-4335-4287-8d1c-9edac64dd6d3",
                             TrabajadorTelefono = "3363713078"
                         },
                         new
@@ -768,7 +766,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "abigayle.mann@gmail.com",
                             TrabajadorFechaNacimiento = new DateTime(1988, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "AGUSTINA",
-                            TrabajadorRegistro = "0a8193d4-11a4-4a4e-adcd-0c2d9c0f9a11",
+                            TrabajadorRegistro = "801cf1ed-cfc0-4414-a09d-2fe1723af290",
                             TrabajadorTelefono = "3347681797"
                         },
                         new
@@ -784,7 +782,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "eddie.prosacco@will.com",
                             TrabajadorFechaNacimiento = new DateTime(1989, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "LOURDES",
-                            TrabajadorRegistro = "79cf5a9b-ec74-4c58-862e-f68c079c645e",
+                            TrabajadorRegistro = "4c6f2ba3-3799-4a75-8a12-f6ed4cce66b7",
                             TrabajadorTelefono = "3344970611"
                         },
                         new
@@ -800,7 +798,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "purdy.leonora@hudson.com",
                             TrabajadorFechaNacimiento = new DateTime(1979, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "ANTONIO",
-                            TrabajadorRegistro = "86e1d65e-5d7b-40ed-a482-f3d73304a883",
+                            TrabajadorRegistro = "852e076c-1f06-448d-83f4-8cb4b79109b9",
                             TrabajadorTelefono = "3392928159"
                         },
                         new
@@ -816,7 +814,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "frami.terence@dubuque.com",
                             TrabajadorFechaNacimiento = new DateTime(1977, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "CLARA GABRIELA",
-                            TrabajadorRegistro = "61e9985c-5bba-4819-a83d-3ae3184822a3",
+                            TrabajadorRegistro = "4ed7576b-a77d-4f4d-8424-ac3f04422d9b",
                             TrabajadorTelefono = "3339752838"
                         },
                         new
@@ -832,7 +830,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "bradtke.torrey@yahoo.com",
                             TrabajadorFechaNacimiento = new DateTime(1978, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "JORGE",
-                            TrabajadorRegistro = "8d54b4d2-8999-47ef-b8dc-e8a0a71ee176",
+                            TrabajadorRegistro = "3e1b7bd9-d146-4b94-bae0-8ca41fbf6a84",
                             TrabajadorTelefono = "3320068241"
                         },
                         new
@@ -848,7 +846,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "thora.hirthe@gmail.com",
                             TrabajadorFechaNacimiento = new DateTime(1982, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "SONIA ERIKA",
-                            TrabajadorRegistro = "437110d5-911c-4eeb-abb4-3ee1c37cf5cf",
+                            TrabajadorRegistro = "fa674223-72f5-4657-8fa7-e464737c35e9",
                             TrabajadorTelefono = "3307889594"
                         },
                         new
@@ -864,7 +862,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "vicenta72@gmail.com",
                             TrabajadorFechaNacimiento = new DateTime(1980, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "ALEJANDRA",
-                            TrabajadorRegistro = "e4311dc7-173a-423f-953a-bcc77186027a",
+                            TrabajadorRegistro = "1cdecc73-47a4-4c20-9ec6-1931053da335",
                             TrabajadorTelefono = "3379836327"
                         },
                         new
@@ -880,7 +878,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "xgoodwin@schinner.com",
                             TrabajadorFechaNacimiento = new DateTime(1970, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "MARTHA",
-                            TrabajadorRegistro = "9389362c-fdfe-4d6f-9091-b69806a1f2d6",
+                            TrabajadorRegistro = "9d9435a8-103c-4349-bcec-7443a44a581d",
                             TrabajadorTelefono = "3330112050"
                         },
                         new
@@ -896,7 +894,7 @@ namespace DataAccess.Migrations
                             TrabajadorEmail = "nelson45@yahoo.com",
                             TrabajadorFechaNacimiento = new DateTime(1996, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TrabajadorNombre = "SERGIO",
-                            TrabajadorRegistro = "bdc1d602-7091-476f-b2c5-2b04b5b3afc7",
+                            TrabajadorRegistro = "4d42ce0f-7b27-4d57-b895-31159f9cadb4",
                             TrabajadorTelefono = "3348810059"
                         });
                 });
@@ -911,7 +909,9 @@ namespace DataAccess.Migrations
 
                     b.HasOne("Entities.TrabajadorEntity", "Trabajador")
                         .WithMany()
-                        .HasForeignKey("TrabajadorId");
+                        .HasForeignKey("TrabajadorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Academia");
 
@@ -920,9 +920,9 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Entities.PermisoEntity", b =>
                 {
-                    b.HasOne("Entities.TrabajadorEntity", "JefeInmediatio")
+                    b.HasOne("Entities.JefeEntity", "JefeInmediato")
                         .WithMany()
-                        .HasForeignKey("JefeInmediatioTrabajadorNomina");
+                        .HasForeignKey("JefeInmediatoId");
 
                     b.HasOne("Entities.TrabajadorEntity", "Trabajador")
                         .WithMany()
@@ -930,7 +930,7 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("JefeInmediatio");
+                    b.Navigation("JefeInmediato");
 
                     b.Navigation("Trabajador");
                 });

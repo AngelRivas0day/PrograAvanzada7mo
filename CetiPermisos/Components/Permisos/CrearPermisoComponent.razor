@@ -121,6 +121,7 @@
             oPermiso.PermisoFechaAplicacion = Convert.ToDateTime(oPermiso.PermisoFechaAplicacion).AddHours(Double.Parse(startHours));
         }
         oPermiso.PermisoEstado = "PENDIENTE";
+        oPermiso.JefeInmediatoId = null;
         B_Permiso.CrearPermiso(oPermiso);
         NavManager.NavigateTo("permisos/lista");
     }
