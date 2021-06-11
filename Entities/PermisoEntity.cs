@@ -23,6 +23,13 @@ namespace Entities
         public DateTime PermisoFechaFinalizacion { get; set; }
 
         [Required]
+        public string PermisoMotivo { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string PermisoEstado { get; set; }
+
+        [Required]
         [StringLength(11)]
         public string TrabajadorId { get; set; }
         public TrabajadorEntity Trabajador { get; set; }
@@ -31,8 +38,5 @@ namespace Entities
         public int JefeInmediatoId { get; set; }
         public TrabajadorEntity JefeInmediatio { get; set; }
 
-        [Required]
-        [StringLength(30)]
-        public string PermisoEstado { get; set; }
     }
 }

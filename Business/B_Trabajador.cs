@@ -12,7 +12,10 @@ namespace Business
         public static TrabajadorEntity TrabajadorPorNomina(string Nomina)
         {
             using var db = new CetiContext();
-            return db.Trabajadores.ToList().LastOrDefault(t => t.TrabajadorNomina == Nomina);
+            return db.Trabajadores
+                .Include(t => t.Plaza)
+                .ToList()
+                .LastOrDefault(t => t.TrabajadorNomina == Nomina);
         }
     }
 }

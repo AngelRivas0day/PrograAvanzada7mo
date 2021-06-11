@@ -148,15 +148,14 @@ namespace DataAccess.Migrations
                     PermisoFechaFinalizacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TrabajadorId = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     JefeInmediatoId = table.Column<int>(type: "int", maxLength: 11, nullable: false),
-                    JefeInmediatioTrabajadorNomina = table.Column<string>(type: "nvarchar(11)", nullable: true),
                     PermisoEstado = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Permisos", x => x.PermisoId);
                     table.ForeignKey(
-                        name: "FK_Permisos_Trabajadores_JefeInmediatioTrabajadorNomina",
-                        column: x => x.JefeInmediatioTrabajadorNomina,
+                        name: "FK_Permisos_Trabajadores_JefeInmediatoId",
+                        column: x => x.JefeInmediatoId,
                         principalTable: "Trabajadores",
                         principalColumn: "TrabajadorNomina",
                         onDelete: ReferentialAction.Restrict);

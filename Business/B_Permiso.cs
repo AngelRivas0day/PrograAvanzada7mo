@@ -26,6 +26,8 @@ namespace Business
         {
             using var db = new CetiContext();
             return db.Permisos
+                .Include(p => p.Trabajador)
+                .Include(p => p.JefeInmediatio)
                 .Where(p => p.TrabajadorId == Nomina)
                 .OrderByDescending(p => p.PermisoFechaAplicacion)
                 .ToList();

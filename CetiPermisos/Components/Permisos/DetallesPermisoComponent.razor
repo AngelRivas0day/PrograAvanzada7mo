@@ -20,7 +20,7 @@
             <label>Fecha de aplicaci&oacute;n</label>
             <InputDate type="date" @bind-Value="oPermiso.PermisoFechaAplicacion" class="form-control" disabled />
         </div>
-       @if (oPermiso.PermisoTipo == "2 horas")
+        @if (oPermiso.PermisoTipo == "2 horas")
         {
             <div class="form-group">
                 <label>Hora de aplicaci&oacute;n</label>
@@ -38,6 +38,10 @@
                 <input type="text" value="@finalizationTime" class="form-control" disabled />
             </div>
         }
+        <div class="form-group">
+            <label>Motivo</label>
+            <InputTextArea @bind-Value="oPermiso.PermisoMotivo" class="form-control" disabled></InputTextArea>
+        </div>
     </EditForm>
 </div>
 
