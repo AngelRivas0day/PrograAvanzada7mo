@@ -48,3 +48,11 @@ a, .btn-link {
     right: 0.75rem;
     top: 0.5rem;
 }
+
+.login-form{
+    margin-top: 30px;
+    max-width: 500px;
+    display: block;
+    margin: 0 auto;
+    width: 90%;
+}

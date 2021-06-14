@@ -20,5 +20,14 @@ namespace Business
                 return false;
             return true;
         }
+
+        public static JefeEntity JefePorNomina(string Nomina)
+        {
+            using var db = new CetiContext();
+            JefeEntity jefe = new JefeEntity();
+            jefe = db.Jefes.FirstOrDefault(j => j.TrabajadorId == Nomina);
+            if (jefe is not null) return jefe;
+            return null;
+        }
     }
 }

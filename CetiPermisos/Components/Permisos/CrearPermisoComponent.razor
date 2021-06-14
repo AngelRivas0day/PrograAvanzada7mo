@@ -76,7 +76,7 @@
                     <SurveyPrompt Title="@message" />
                 }
             </div>
-            <input class="btn btn-primary" type="submit" value="Solicitar permiso" @onclick="CreatePermiso" />
+            <input disabled="@(!infoValida)" class="btn btn-primary" type="submit" value="Solicitar permiso" @onclick="CreatePermiso" />
         </EditForm>
     </div>
 }
@@ -102,6 +102,7 @@ else
     public string finalizationTime = "";
     public string numberOfDays = null;
     private bool isLoading = false;
+    private bool infoValida = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,15 +128,17 @@ else
     private void CreatePermiso()
     {
         // si la fecha de aplicacion es antes de hoy, salimos de la funcion
-        if (DateTime.Now > oPermiso.PermisoFechaAplicacion)
+        if (DateTime.Now > oPermiso.PermisoFechaAplicacion && oPermiso.PermisoTipo != "2 horas")
         {
             message = "La fecha de aplicación no puede ser anterior al día de hoy.";
             return;
         }
+        // validar que el profe haya trabajado el año completo
+        if (!ValidarFechaDeContratacion(oPermiso.TrabajadorId)) return;
         // validar si puede pedir permisos en funcion de los permisos pedidos anteriormente
-        if (!ValidarNumeroDePermisos()) { return; }
+        if (!ValidarNumeroDePermisos()) return;
         // validar que los datos el permiso actual sean correctos
-        if (!ValidarPorTipoDePermiso()) { return; }
+        if (!ValidarPorTipoDePermiso()) return;
         // Agregar horas cuando sea permiso de dos horas
         if (oPermiso.PermisoTipo == "2 horas")
         {
@@ -196,7 +199,7 @@ else
         // permisos en lapso de dos dias
         if (permisos.ToArray().Length != 0)
         {
-            if (permisos[0].PermisoFechaElaboracion.AddDays(2) > DateTime.Now)
+            if (permisos[0].PermisoFechaElaboracion.AddDays(2) > DateTime.Now && oPermiso.PermisoTipo != "2 horas")
             {
                 message = "No se puede perdir más de un permiso en un lapso de dos días";
                 return false;
@@ -250,6 +253,22 @@ else
         return true;
     }
 
+    private bool ValidarFechaDeContratacion(string Nomina)
+    {
+        DateTime fechaContratacion = B_Trabajador.TrabajadorFechaDeContratacion(Nomina);
+        DateTime fechaActual = DateTime.Now;
+        if((fechaActual - fechaContratacion).TotalDays == 90)
+        {
+            message = "algo";
+            return false;
+        }
+        else
+        {
+            message = "algo mas";
+            return true;
+        }
+    }
+
     private bool ValidateDatesDiff()
     {
         var firstDate = oPermiso.PermisoFechaElaboracion;
@@ -273,19 +292,41 @@ else
 
     private void OnChangeApplicationDate(ChangeEventArgs e)
     {
+        var value = Convert.ToDateTime(e.Value.ToString());
+        if (!ValidarFinDeSemana(value))
+        {
+            message = "No puedes seleccionar fines de semana.";
+            infoValida = false;
+            return;
+        }
+        else
+        {
+            infoValida = true;
+            message = null;
+        }
         if (oPermiso.PermisoTipo == "Economico")
         {
             if (numberOfDays == "1")
-                oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddDays(1);
+                oPermiso.PermisoFechaFinalizacion = value.AddDays(1);
             if (numberOfDays == "2")
-                oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddDays(2);
+                oPermiso.PermisoFechaFinalizacion = value.AddDays(2);
             if (numberOfDays == "3")
-                oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddDays(3);
+                oPermiso.PermisoFechaFinalizacion = value.AddDays(3);
         }
         if (oPermiso.PermisoTipo == "Cumpleanios")
-            oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddDays(1);
+            oPermiso.PermisoFechaFinalizacion = value.AddDays(1);
         if (oPermiso.PermisoTipo == "2 horas")
-            oPermiso.PermisoFechaFinalizacion = Convert.ToDateTime(e.Value.ToString()).AddHours(2);
+            oPermiso.PermisoFechaFinalizacion = value.AddHours(2);
+        if (!ValidarFinDeSemana(oPermiso.PermisoFechaFinalizacion))
+        {
+            message = "La fecha de finalizacion no puede ser en fin de semana";
+            infoValida = false;
+        }
+        else
+        {
+            infoValida = true;
+            message = null;
+        }
     }
 
     private void OnChangeTime(ChangeEventArgs e)
@@ -307,5 +348,30 @@ else
             oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaFinalizacion.AddDays(2);
         if (e.Value.ToString() == "3")
             oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaFinalizacion.AddDays(3);
+        if (!ValidarFinDeSemana(oPermiso.PermisoFechaFinalizacion))
+        {
+            message = "Le fecha de finalizacion no puede ser en fin de semana";
+            infoValida = false;
+        }
+        else
+        {
+            message = null;
+            infoValida = true;
+        }
+    }
+
+    private bool ValidarFinDeSemana(DateTime fecha, int? diasExtra = null)
+    {
+        string diaDeLaSemana = fecha.DayOfWeek.ToString();
+        bool valid = false;
+        if (diaDeLaSemana == "Saturday" || diaDeLaSemana == "Sunday") valid = false;
+        else valid = true;
+        if(diasExtra is not null)
+        {
+            string nuevoDiaDeLaSemana = fecha.AddDays(Convert.ToInt32(diasExtra)).DayOfWeek.ToString();
+            if (nuevoDiaDeLaSemana == "Saturday" || nuevoDiaDeLaSemana == "Sunday") valid = false;
+            else valid = true;
+        }
+        return valid;
     }
 }

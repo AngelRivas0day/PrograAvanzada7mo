@@ -17,5 +17,12 @@ namespace Business
                 .ToList()
                 .LastOrDefault(t => t.TrabajadorNomina == Nomina);
         }
+        public static DateTime TrabajadorFechaDeContratacion(string Nomina)
+        {
+            using var db = new CetiContext();
+            PuestoEntity puesto = new PuestoEntity();
+            puesto = db.Puestos.FirstOrDefault(p => p.TrabajadorId == Nomina);
+            return Convert.ToDateTime(puesto.PlazaFechaInicio);
+        }
     }
 }

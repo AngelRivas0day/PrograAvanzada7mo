@@ -20,7 +20,7 @@ namespace Business
         public static PermisoEntity PermisoPorId(int Id)
         {
             using var db = new CetiContext();
-            return db.Permisos.ToList().LastOrDefault(p => p.PermisoId == Id);
+            return db.Permisos.Include(p => p.Trabajador).ToList().LastOrDefault(p => p.PermisoId == Id);
         }
         public static List<PermisoEntity> PermisosPorTrabajador(string Nomina)
         {

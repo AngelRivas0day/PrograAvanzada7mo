@@ -1,7 +1,10 @@
 ﻿@using Entities
 @using Business
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 
-@inject NavigationManager NavManager 
+@inject NavigationManager NavManager
+@inject ProtectedLocalStorage LocalStorage
+
 
 <div class="form-container" style="max-width: 500px; margin: 0 auto; display: block;">
     <EditForm Model="oPermiso">
@@ -44,32 +47,56 @@
             <label>Motivo</label>
             <InputTextArea @bind-Value="oPermiso.PermisoMotivo" class="form-control" disabled></InputTextArea>
         </div>
-        <input class="btn btn-primary" value="Aceptar permiso" @onclick="AceptarPermiso" />
-        <input class="btn btn-danger" value="Rechazar permiso" @onclick="RechazarPermiso" />
+        @if (puedeEditar)
+        {
+            <input class="btn btn-primary" value="Aceptar permiso" @onclick="AceptarPermiso" />
+            <input class="btn btn-danger" value="Rechazar permiso" @onclick="RechazarPermiso" />
+        }
+        else
+        {
+            <input disabled class="btn btn-primary" value="Aceptar permiso" />
+            <input disabled class="btn btn-danger" value="Rechazar permiso" />
+        }
+
     </EditForm>
 </div>
 
 @code {
     [Parameter]
     public string PermisoId { get; set; }
-    PermisoEntity oPermiso = new PermisoEntity();
+    private bool puedeEditar = true;
     public string applicationTime = "";
     public string finalizationTime = "";
+    PermisoEntity oPermiso = new PermisoEntity();
+    JefeEntity jefe = new JefeEntity();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        oPermiso = B_Permiso.PermisoPorId(Convert.ToInt32(PermisoId));
-        if(oPermiso.PermisoTipo == "2 horas")
+        var result = await LocalStorage.GetAsync<string>("nomina");
+        if (!result.Success)
         {
-            applicationTime = Convert.ToDateTime(oPermiso.PermisoFechaAplicacion).ToString("HH:mm:ss");
-            finalizationTime = Convert.ToDateTime(oPermiso.PermisoFechaFinalizacion).ToString("HH:mm:ss");
-
+            NavManager.NavigateTo("iniciar-session");
+            return;
         }
+        bool esJefe = B_Jefe.EsJefe(result.Value.ToString());
+        if (esJefe)
+        {
+            jefe = B_Jefe.JefePorNomina(result.Value.ToString());
+            oPermiso = B_Permiso.PermisoPorId(Convert.ToInt32(PermisoId));
+            oPermiso.JefeInmediatoId = jefe.JefeId;
+            ValidarEstadoPermiso(oPermiso);
+            if (oPermiso.PermisoTipo == "2 horas")
+            {
+                applicationTime = Convert.ToDateTime(oPermiso.PermisoFechaAplicacion).ToString("HH:mm:ss");
+                finalizationTime = Convert.ToDateTime(oPermiso.PermisoFechaFinalizacion).ToString("HH:mm:ss");
+
+            }
+        }
+
     }
 
     private void AceptarPermiso()
     {
-        oPermiso.JefeInmediatoId = 1;
         oPermiso.PermisoEstado = "ACEPTADO";
         B_Permiso.ActualizarPermiso(oPermiso);
         NavManager.NavigateTo("permisos/lista");
@@ -77,9 +104,13 @@
 
     private void RechazarPermiso()
     {
-        oPermiso.JefeInmediatoId = 1;
         oPermiso.PermisoEstado = "RECHAZADO";
         B_Permiso.ActualizarPermiso(oPermiso);
         NavManager.NavigateTo("permisos/lista");
+    }
+
+    private void ValidarEstadoPermiso(PermisoEntity permiso)
+    {
+        if (permiso.PermisoEstado != "PENDIENTE") puedeEditar = false;
     }
 }
