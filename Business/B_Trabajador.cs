@@ -24,5 +24,10 @@ namespace Business
             puesto = db.Puestos.FirstOrDefault(p => p.TrabajadorId == Nomina);
             return Convert.ToDateTime(puesto.PlazaFechaInicio);
         }
+        public static int AcademiaDeTrabajador(string Nomina)
+        {
+            using var db = new CetiContext();
+            return db.Puestos.FirstOrDefault(p => p.TrabajadorId == Nomina).AcademiaId;
+        }
     }
 }

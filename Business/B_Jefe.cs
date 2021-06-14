@@ -29,5 +29,14 @@ namespace Business
             if (jefe is not null) return jefe;
             return null;
         }
+
+        public static bool EsDirector(string Nomina)
+        {
+            using var db = new CetiContext();
+            JefeEntity jefe = new();
+            jefe = db.Jefes.Where(j => j.TrabajadorId == Nomina).FirstOrDefault(j => j.JefeTotal == 1);
+            if (jefe is null) return false;
+            return true;
+        }
     }
 }

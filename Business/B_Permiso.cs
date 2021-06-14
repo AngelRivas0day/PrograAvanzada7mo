@@ -22,6 +22,22 @@ namespace Business
             using var db = new CetiContext();
             return db.Permisos.Include(p => p.Trabajador).ToList().LastOrDefault(p => p.PermisoId == Id);
         }
+        public static List<PermisoEntity> PermisosPorAcademia(int AcademiaId)
+        {
+            using var db = new CetiContext();
+            var trabajadoresId = db.Puestos
+                            .Include(p => p.Trabajador)
+                            .Where(p => p.AcademiaId == AcademiaId)
+                            .Select(p => p.Trabajador.TrabajadorNomina )
+                            .ToList();
+            List<PermisoEntity> permisos = new List<PermisoEntity>();
+            permisos = db.Permisos
+                .Include(p => p.Trabajador)
+                .Include(p => p.JefeInmediato).ThenInclude(jefe => jefe.Trabajador)
+                .Where(p => trabajadoresId.Contains(p.TrabajadorId))
+                .ToList();
+            return permisos;
+        }
         public static List<PermisoEntity> PermisosPorTrabajador(string Nomina)
         {
             using var db = new CetiContext();

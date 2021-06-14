@@ -2,6 +2,7 @@
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage LocalStorage
+@inject NavigationManager NavManager
 
 <div class="page">
     <div class="sidebar">
@@ -10,14 +11,14 @@
 
     <div class="main">
         <div class="top-row px-4 auth">
-            @if (loggedIn)
-            {
+            @*@if (loggedIn)*@
+            @*{*@
                 <a href="/iniciar-sesion" @onclick="CerrarSesion">Cerrar sesi&oacute;n</a>
-            }
-            @if (!loggedIn)
-            {
+            @*}*@
+            @*@if (!loggedIn)*@
+            @*{*@
                 <a href="/iniciar-sesion">Iniciar sesi&oacute;n</a>
-            }
+            @*}*@
         </div>
 
         <div class="content px-4">
@@ -33,5 +34,6 @@
         await LocalStorage.DeleteAsync("nomina");
         await LocalStorage.DeleteAsync("esJefe");
         await LocalStorage.DeleteAsync("plazaFija");
+        NavManager.NavigateTo("iniciar-sesion");
     }
 }

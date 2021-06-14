@@ -15,7 +15,7 @@
                 <label>Tipo de permiso</label>
                 <select class="form-control" @oninput="CambioPermisoTipo">
                     <option value="">Selecciona una opci&oacute;n</option>
-                    @foreach(var tipo in tiposPermiso)
+                    @foreach (var tipo in tiposPermiso)
                     {
                         <option value="@tipo">@tipo</option>
                     }
@@ -50,52 +50,52 @@
                 </tr>
             </thead>
             <tbody>
-               @foreach (var permiso in tempPermisos)
+                @foreach (var permiso in tempPermisos)
                 {
-                <tr class="
+                    <tr class="
                     @(permiso.PermisoEstado == "PENDIENTE" ? " table-warning " : "");
                     @(permiso.PermisoEstado == "RECHAZADO" ? " table-danger " : "");
                     @(permiso.PermisoEstado == "ACEPTADO" ? " table-success " : "");
                     @(permiso.PermisoEliminado == 1 ? " table-danger " : "");
                 ">
-                    <th>@permiso.PermisoId</th>
-                    <td>@permiso.PermisoTipo</td>
-                    <td>@permiso.PermisoFechaElaboracion</td>
-                    <td>@permiso.PermisoFechaAplicacion</td>
-                    <td>@permiso.PermisoFechaFinalizacion</td>
-                    <td>@permiso.Trabajador.TrabajadorNombre @permiso.Trabajador.TrabajadorApPaterno</td>
-                    <td>
-                       @if (permiso.JefeInmediatoId > 0)
-                        {
-                            @permiso.JefeInmediato.Trabajador.TrabajadorNombre <span>&nbsp;</span> @permiso.JefeInmediato.Trabajador.TrabajadorApPaterno
-                        }
-                        else
-                        {
-                            <span>-</span>
-                        }
-                    </td>
-                    <td>@permiso.PermisoEstado</td>
-                    <td>
-                       @if (permiso.PermisoEliminado == 1)
-                        {
-                            <span>SI</span>
-                        }
-                        else
-                        {
-                            <span>NO</span>
-                        }
-                    </td>
-                    <td>
-                       @if (esJefe)
-                        {
-                            <a href="permisos/autorizar/@permiso.PermisoId" class="btn btn-primary">Gestionar</a>
-                        }
-                        else
-                        {
-                            <a href="permisos/detalles/@permiso.PermisoId" class="btn btn-primary">Ver detalles</a>
-                        }
-                    </td>
-                </tr>
+                        <th>@permiso.PermisoId</th>
+                        <td>@permiso.PermisoTipo</td>
+                        <td>@permiso.PermisoFechaElaboracion</td>
+                        <td>@permiso.PermisoFechaAplicacion</td>
+                        <td>@permiso.PermisoFechaFinalizacion</td>
+                        <td>@permiso.Trabajador.TrabajadorNombre @permiso.Trabajador.TrabajadorApPaterno</td>
+                        <td>
+                            @if (permiso.JefeInmediatoId > 0)
+                            {
+                                @permiso.JefeInmediato.Trabajador.TrabajadorNombre <span>&nbsp;</span> @permiso.JefeInmediato.Trabajador.TrabajadorApPaterno
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>@permiso.PermisoEstado</td>
+                        <td>
+                            @if (permiso.PermisoEliminado == 1)
+                            {
+                                <span>SI</span>
+                            }
+                            else
+                            {
+                                <span>NO</span>
+                            }
+                        </td>
+                        <td>
+                            @if (esJefe)
+                            {
+                                <a href="permisos/autorizar/@permiso.PermisoId" class="btn btn-primary">Gestionar</a>
+                            }
+                            else
+                            {
+                                <a href="permisos/detalles/@permiso.PermisoId" class="btn btn-primary">Ver detalles</a>
+                            }
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -122,7 +122,7 @@ else
     List<PermisoEntity> permisos = new List<PermisoEntity>();
     List<PermisoEntity> tempPermisos = new List<PermisoEntity>();
     TrabajadorEntity trabajador = new TrabajadorEntity();
-    private string[] estadosPermiso = { "PENDIENTE", "APROBADO", "RECHAZADO" };
+    private string[] estadosPermiso = { "PENDIENTE", "ACEPTADO", "RECHAZADO" };
     private string[] tiposPermiso = { "Economico", "Cumpleanios", "2 horas" };
     bool esJefe = false;
 
@@ -139,12 +139,23 @@ else
         esJefe = B_Jefe.EsJefe(trabajador.TrabajadorNomina);
         if (esJefe)
         {
-            permisos = B_Permiso.PermisoLista();
+            bool esDirector = B_Jefe.EsDirector(trabajador.TrabajadorNomina);
+            int academiaId = B_Trabajador.AcademiaDeTrabajador(trabajador.TrabajadorNomina);
+            if (esDirector)
+            {
+                permisos = B_Permiso.PermisoLista();
+
+            }
+            else
+            {
+                permisos = B_Permiso.PermisosPorAcademia(academiaId);
+            }
         }
         else
         {
             permisos = B_Permiso.PermisosPorTrabajador(trabajador.TrabajadorNomina);
         }
+
         tempPermisos = permisos is not null ? permisos : null;
         isLoading = false;
     }
@@ -156,7 +167,7 @@ else
             tempPermisos = permisos;
             return;
         }
-        tempPermisos = (permisos.Where(p=>p.PermisoTipo == e.Value.ToString())).ToList();
+        tempPermisos = (permisos.Where(p => p.PermisoTipo == e.Value.ToString())).ToList();
     }
 
     private void CambioPermisoEstado(ChangeEventArgs e)
@@ -166,6 +177,6 @@ else
             tempPermisos = permisos;
             return;
         }
-        tempPermisos = (permisos.Where(p=>p.PermisoEstado == e.Value.ToString())).ToList();
+        tempPermisos = (permisos.Where(p => p.PermisoEstado == e.Value.ToString())).ToList();
     }
 }
