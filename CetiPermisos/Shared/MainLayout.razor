@@ -1,5 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage LocalStorage
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -7,8 +10,14 @@
 
     <div class="main">
         <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            @if (loggedIn)
+            {
+                <a href="/iniciar-sesion" @onclick="CerrarSesion">Cerrar sesi&oacute;n</a>
+            }
+            @if (!loggedIn)
+            {
+                <a href="/iniciar-sesion">Iniciar sesi&oacute;n</a>
+            }
         </div>
 
         <div class="content px-4">
@@ -16,3 +25,19 @@
         </div>
     </div>
 </div>
+
+@code {
+    private bool loggedIn = false;
+    @*protected override async Task OnAfterRenderAsync()
+    {
+        var result = await LocalStorage.GetAsync<string>("nomina");
+        if (result.Success) loggedIn = true;
+        if (!result.Success) loggedIn = false;
+    }*@
+    private async void CerrarSesion()
+    {
+        await LocalStorage.DeleteAsync("nomina");
+        await LocalStorage.DeleteAsync("esJefe");
+        await LocalStorage.DeleteAsync("plazaFija");
+    }
+}

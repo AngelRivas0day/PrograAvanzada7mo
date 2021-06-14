@@ -1,0 +1,67 @@
+﻿@using Entities
+@using Business
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+@inject ProtectedLocalStorage LocalStorage
+@inject NavigationManager NavManager
+
+<div class="login-container">
+    <div class="login-box">
+        <form class="login-form">
+            <div class="form-group">
+                <label>Usuario</label>
+                <input class="form-control" value="@Nomina" @onchange="OnchangeNomina" />
+            </div>
+            <div class="form-group">
+                <label>Contrase&ntilde;a</label>
+                <input type="password" class="form-control" value="@Password" @onchange="OnchangePassword" />
+            </div>
+            @if (message is not null)
+            {
+                <SurveyPrompt Title="@message" />
+            }
+            <div class="text-center">
+                <input class="btn btn-primary" value="Iniciar sesión" type="button" @onclick="Login" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@code {
+    UsuarioEntity oUsuario = new UsuarioEntity();
+    private string message = null;
+    private string Nomina = null;
+    private string Password = null;
+    private async void Login()
+    {
+        bool puedeEntrar = B_Usuario.UserLogin(Nomina, Password);
+        bool esJefe = B_Jefe.EsJefe(Nomina);
+        bool esPlazaFija = B_Plaza.EsPlazaFija(Nomina);
+        if (puedeEntrar is not false)
+        {
+            if (esJefe is true) await SaveToLocaleStorageAsync("esJefe", "true");
+            if (esPlazaFija is true) await SaveToLocaleStorageAsync("plazaFija", "true");
+            await SaveToLocaleStorageAsync("nomina", Nomina);
+            NavManager.NavigateTo("permisos/lista");
+        }
+        else
+        {
+            message = "No se ha podido iniciar sesion. Por favor verifica tus datos.";
+        }
+    }
+
+    private async Task SaveToLocaleStorageAsync(String Key, String value)
+    {
+        await LocalStorage.SetAsync(Key, value);
+    }
+
+    private void OnchangeNomina(ChangeEventArgs e)
+    {
+        Nomina = e.Value.ToString();
+    }
+
+    private void OnchangePassword(ChangeEventArgs e)
+    {
+        Password = e.Value.ToString();
+    }
+}

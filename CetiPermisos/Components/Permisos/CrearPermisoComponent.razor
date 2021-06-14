@@ -1,78 +1,92 @@
 ﻿@using Entities
 @using Business
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 
 @inject NavigationManager NavManager
+@inject ProtectedLocalStorage LocalStorage
 
-<div class="form-container" style="max-width: 500px; margin: 0 auto; display: block;">
-    <EditForm Model="oPermiso">
-        <div class="form-group">
-            <label>Tipo de permiso</label>
-            <InputSelect @oninput="OnChangeType" @bind-Value="oPermiso.PermisoTipo" class="form-control">
-                <option>Selecciona una opcion</option>
-                <option value="2 horas">2 horas</option>
-                <option value="Economico">Economico</option>
-                <option value="Cumpleanios">Cumplea&ntilde;os</option>
-            </InputSelect>
-        </div>
-        <div class="form-group">
-            <label>Fecha de elaboraci&oacute;n</label>
-            <InputDate type="date" @bind-Value="oPermiso.PermisoFechaElaboracion" class="form-control" disabled />
-        </div>
-        @if (types.Contains(oPermiso.PermisoTipo, StringComparer.OrdinalIgnoreCase))
-        {
+
+@if (!isLoading)
+{
+    <div class="form-container" style="max-width: 500px; margin: 0 auto; display: block;">
+        <h5>Solicitud de permiso para el trabajador: @trabajador.TrabajadorNombre&nbsp;@trabajador.TrabajadorApPaterno</h5>
+        <EditForm Model="oPermiso">
             <div class="form-group">
-                <label>Fecha de aplicaci&oacute;n</label>
-                <InputDate type="date" @oninput="OnChangeApplicationDate" @bind-Value="oPermiso.PermisoFechaAplicacion" class="form-control" />
+                <label>Tipo de permiso</label>
+                <InputSelect @oninput="OnChangeType" @bind-Value="oPermiso.PermisoTipo" class="form-control">
+                    <option>Selecciona una opcion</option>
+                    <option value="2 horas">2 horas</option>
+                    <option value="Economico">Economico</option>
+                    <option value="Cumpleanios">Cumplea&ntilde;os</option>
+                </InputSelect>
             </div>
-           @if(oPermiso.PermisoTipo == "Economico")
-            {
-               <div class="form-group">
-                   <label>Di&iacute;s del permiso</label>
-                   <select @onchange="OnChangeNumberOfDays" value="@numberOfDays" class="form-control">
-                       <option>Selecciona una opci&oacute;n</option>
-                       <option value="1">1 d&iacute;a</option>
-                       <option value="2">2 d&iacute;as</option>
-                       <option value="3">3 d&iacute;as</option>
-                   </select>
-               </div>
-            }
-            @if (oPermiso.PermisoTipo == "2 horas")
+            <div class="form-group">
+                <label>Fecha de elaboraci&oacute;n</label>
+                <InputDate type="date" @bind-Value="oPermiso.PermisoFechaElaboracion" class="form-control" disabled />
+            </div>
+            @if (types.Contains(oPermiso.PermisoTipo, StringComparer.OrdinalIgnoreCase))
             {
                 <div class="form-group">
-                    <label>Hora de aplicaci&oacute;n</label>
-                    <select @onchange="OnChangeTime" value="@applicationTime" class="form-control">
-                       @foreach(var hour in hours)
-                        {
-                            <option value="@hour">@hour horas</option>
-                        }
-                    </select>
+                    <label>Fecha de aplicaci&oacute;n</label>
+                    <InputDate type="date" @oninput="OnChangeApplicationDate" @bind-Value="oPermiso.PermisoFechaAplicacion" class="form-control" />
                 </div>
-            }
-            <div class="form-group">
-                <label>Fecha de finalizaci&oacute;n</label>
-                <InputDate type="date" @bind-Value="oPermiso.PermisoFechaFinalizacion" class="form-control" disabled />
-            </div>
-            @if (oPermiso.PermisoTipo == "2 horas")
-            {
+                @if (oPermiso.PermisoTipo == "Economico")
+                {
+                    <div class="form-group">
+                        <label>Di&iacute;s del permiso</label>
+                        <select @onchange="OnChangeNumberOfDays" value="@numberOfDays" class="form-control">
+                            <option>Selecciona una opci&oacute;n</option>
+                            <option value="1">1 d&iacute;a</option>
+                            <option value="2">2 d&iacute;as</option>
+                            <option value="3">3 d&iacute;as</option>
+                        </select>
+                    </div>
+                }
+                @if (oPermiso.PermisoTipo == "2 horas")
+                {
+                    <div class="form-group">
+                        <label>Hora de aplicaci&oacute;n</label>
+                        <select @onchange="OnChangeTime" value="@applicationTime" class="form-control">
+                            @foreach (var hour in hours)
+                            {
+                                <option value="@hour">@hour horas</option>
+                            }
+                        </select>
+                    </div>
+                }
                 <div class="form-group">
-                    <label>Hora de finalizaci&oacute;n</label>
-                    <input class="form-control" value="@finalizationTime" disabled />
+                    <label>Fecha de finalizaci&oacute;n</label>
+                    <InputDate type="date" @bind-Value="oPermiso.PermisoFechaFinalizacion" class="form-control" disabled />
+                </div>
+                @if (oPermiso.PermisoTipo == "2 horas")
+                {
+                    <div class="form-group">
+                        <label>Hora de finalizaci&oacute;n</label>
+                        <input class="form-control" value="@finalizationTime" disabled />
+                    </div>
+                }
+                <div class="form-group">
+                    <label>Motivo</label>
+                    <InputTextArea @bind-Value="oPermiso.PermisoMotivo" class="form-control"></InputTextArea>
                 </div>
             }
-            <div class="form-group">
-                <label>Motivo</label>
-                <InputTextArea @bind-Value="oPermiso.PermisoMotivo" class="form-control"></InputTextArea>
+            <div class="d-block">
+                @if (message is not null)
+                {
+                    <SurveyPrompt Title="@message" />
+                }
             </div>
-        }
-        <div class="d-block">
-            @if(message is not null)
-             {
-                <SurveyPrompt Title="@message" />
-             }
-        </div>
-        <input class="btn btn-primary" type="submit" value="Solicitar permiso" @onclick="CreatePermiso" />
-    </EditForm>
-</div>
+            <input class="btn btn-primary" type="submit" value="Solicitar permiso" @onclick="CreatePermiso" />
+        </EditForm>
+    </div>
+}
+else
+{
+    <div class="my-4">
+        <h1 class="text-center">Cargando...</h1>
+    </div>
+}
+
 
 
 @code {
@@ -83,19 +97,31 @@
     public string[] types = { "2 horas", "Cumpleanios", "Economico" };
     public string[] hours = { "07:00", "13:00" };
     private static int currentYear = DateTime.Now.Year;
-    public DateTime[] diasFestivos = { new DateTime(currentYear, 1,1) };
+    public DateTime[] diasFestivos = { new DateTime(currentYear, 1, 1) };
     public string applicationTime = "";
     public string finalizationTime = "";
     public string numberOfDays = null;
+    private bool isLoading = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        trabajador = B_Trabajador.TrabajadorPorNomina("106");
-        oPermiso.PermisoFechaElaboracion = DateTime.Now;
-        oPermiso.PermisoFechaAplicacion = DateTime.Now;
-        oPermiso.TrabajadorId = trabajador.TrabajadorNomina;
-        applicationTime = hours[0];
-        finalizationTime = "09:00";
+        isLoading = true;
+        var result = await LocalStorage.GetAsync<string>("nomina");
+        if (!result.Success)
+        {
+            NavManager.NavigateTo("iniciar-sesion");
+            return;
+        }
+        if (result.Success)
+        {
+            trabajador = B_Trabajador.TrabajadorPorNomina(result.Value.ToString());
+            oPermiso.PermisoFechaElaboracion = DateTime.Now;
+            oPermiso.PermisoFechaAplicacion = DateTime.Now;
+            oPermiso.TrabajadorId = trabajador.TrabajadorNomina;
+            applicationTime = hours[0];
+            finalizationTime = "09:00";
+        }
+        isLoading = false;
     }
 
     private void CreatePermiso()
@@ -106,7 +132,7 @@
             message = "La fecha de aplicación no puede ser anterior al día de hoy.";
             return;
         }
-        // validar si puede pedir permisos en funcion de los permisos pedidos anteriormente 
+        // validar si puede pedir permisos en funcion de los permisos pedidos anteriormente
         if (!ValidarNumeroDePermisos()) { return; }
         // validar que los datos el permiso actual sean correctos
         if (!ValidarPorTipoDePermiso()) { return; }
@@ -168,7 +194,7 @@
     {
         List<PermisoEntity> permisos = B_Permiso.PermisosPorTrabajador(trabajador.TrabajadorNomina);
         // permisos en lapso de dos dias
-        if(permisos.ToArray().Length != 0)
+        if (permisos.ToArray().Length != 0)
         {
             if (permisos[0].PermisoFechaElaboracion.AddDays(2) > DateTime.Now)
             {
@@ -177,7 +203,7 @@
             }
         }
         // permisos economicos
-        if(oPermiso.PermisoTipo == "Economico")
+        if (oPermiso.PermisoTipo == "Economico")
         {
             List<PermisoEntity> permisosEconomicos = permisos
                                                         .Where(p => p.PermisoTipo == "Economico")
@@ -193,7 +219,7 @@
                 return false;
             }
             // si hay otro permiso economico en el mismo mes, no se pueden pedir más
-            if(permisosEconomicosDelMes.ToArray().Length != 0)
+            if (permisosEconomicosDelMes.ToArray().Length != 0)
             {
                 message = "No se puede perdir más de un permiso económico en el mismo mes.";
                 return false;
@@ -201,7 +227,7 @@
         }
 
         // permisos de dos horas
-        if(oPermiso.PermisoTipo == "2 horas")
+        if (oPermiso.PermisoTipo == "2 horas")
         {
             // permisos de dos horas dentro de la quincena actual
             int currentMonth = DateTime.Now.Month;
@@ -215,7 +241,7 @@
                                                         )
                                                         .ToList();
             // si hay mas de dos permisos en esta quincena, no se otorga otro
-            if(permisosDeDosHoras.ToArray().Length >= 2)
+            if (permisosDeDosHoras.ToArray().Length >= 2)
             {
                 message = "No se puede perdir más de dos permisos por quincena.";
                 return false;
@@ -234,7 +260,7 @@
 
     private void OnChangeType(ChangeEventArgs e)
     {
-        if(e.Value.ToString() == "Economico")
+        if (e.Value.ToString() == "Economico")
         {
             oPermiso.PermisoFechaFinalizacion = oPermiso.PermisoFechaAplicacion.AddDays(1);
             numberOfDays = "1";
@@ -265,9 +291,9 @@
     private void OnChangeTime(ChangeEventArgs e)
     {
         var currentIndex = Array.IndexOf(hours, e.Value.ToString());
-        if(currentIndex == 0)
+        if (currentIndex == 0)
             finalizationTime = "09:00";
-        else if(currentIndex == 1)
+        else if (currentIndex == 1)
             finalizationTime = "15:00";
     }
 

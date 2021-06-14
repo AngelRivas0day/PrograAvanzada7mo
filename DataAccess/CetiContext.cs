@@ -1,5 +1,6 @@
 ﻿using System;
 using Entities;
+using DataAccess.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -14,6 +15,7 @@ namespace DataAccess
         public DbSet<PuestoEntity> Puestos { get; set; }
         public DbSet<JefeEntity> Jefes { get; set; }
         public DbSet<PermisoEntity> Permisos { get; set; }
+        public DbSet<UsuarioEntity> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -25,6 +27,7 @@ namespace DataAccess
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            string Key = "b14ca5898a4e4133bbce2ea2315a1916";
             // a partir de aqui podemos pre cargar entradas en la base de datos
             base.OnModelCreating(modelBuilder);
             // aqui vamos a dictaminar que registros vamos a crear en la base de datos
@@ -344,6 +347,25 @@ namespace DataAccess
                 new PuestoEntity { PuestoId = 14, TrabajadorId = "991", PlazaFechaInicio = new DateTime(2013, 08, 23), AcademiaId = 3 },
                 new PuestoEntity { PuestoId = 15, TrabajadorId = "669", PlazaFechaInicio = new DateTime(2014, 09, 12), AcademiaId = 3 },
                 new PuestoEntity { PuestoId = 16, TrabajadorId = "500", PlazaFechaInicio = new DateTime(2015, 12, 01), AcademiaId = 3 }
+            );
+
+            modelBuilder.Entity<UsuarioEntity>().HasData(
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "836" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "520" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "969" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "662" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "870" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "142" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "106" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "728" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "861" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "675" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "972" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "779" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "656" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "991" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "669" },
+                new UsuarioEntity { UsuarioId = Guid.NewGuid().ToString(), UsuarioAcceso = Crypt.EncryptString(Key, "passwordSegura123"), TrabajadorId = "500" }
             );
         }
     }

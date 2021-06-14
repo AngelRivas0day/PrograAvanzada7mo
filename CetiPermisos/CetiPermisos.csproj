@@ -21,6 +21,8 @@
     <Folder Include="Components\" />
     <Folder Include="Components\Permisos\" />
     <Folder Include="Pages\Permisos\" />
+    <Folder Include="Pages\Auth\" />
+    <Folder Include="Components\Auth\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">
