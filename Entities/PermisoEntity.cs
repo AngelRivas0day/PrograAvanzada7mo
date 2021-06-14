@@ -30,6 +30,9 @@ namespace Entities
         public string PermisoEstado { get; set; }
 
         [Required]
+        public int PermisoEliminado { get; set; }
+
+        [Required]
         [StringLength(11)]
         public string TrabajadorId { get; set; }
         public TrabajadorEntity Trabajador { get; set; }

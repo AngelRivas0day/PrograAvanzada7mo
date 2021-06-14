@@ -29,6 +29,7 @@ namespace Business
                 .Include(p => p.Trabajador)
                 .Include(p => p.JefeInmediato).ThenInclude(jefe => jefe.Trabajador)
                 .Where(p => p.TrabajadorId == Nomina)
+                .Where(p => p.PermisoEliminado == 0)
                 .OrderByDescending(p => p.PermisoFechaAplicacion)
                 .ToList();
         }

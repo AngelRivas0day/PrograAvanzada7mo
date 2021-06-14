@@ -1,20 +1,21 @@
 ﻿@using Entities
 @using Business 
 
-
-<tabla class="table">
-    <tbody>
-        <tr>
-            <th>Nombre del trabajador</th>
-            <td>@oPermiso.Trabajador.TrabajadorNombre&nbsp;@oPermiso.Trabajador.TrabajadorApPaterno&nbsp;@oPermiso.Trabajador.TrabajadorApMaterno</td>
-        </tr>
-        <tr>
-            <th>Identificacion del trabajador</th>
-            <td>@oPermiso.Trabajador.TrabajadorRegistro</td>
-        </tr>
-    </tbody>
-</tabla>
+@inject NavigationManager NavManager
+ 
 <div class="form-container" style="max-width: 500px; margin: 0 auto; display: block;">
+    <tabla class="table">
+        <tbody>
+            <tr>
+                <th>Nombre del trabajador</th>
+                <td>@oPermiso.Trabajador.TrabajadorNombre&nbsp;@oPermiso.Trabajador.TrabajadorApPaterno&nbsp;@oPermiso.Trabajador.TrabajadorApMaterno</td>
+            </tr>
+            <tr>
+                <th>Identificacion del trabajador</th>
+                <td>@oPermiso.Trabajador.TrabajadorRegistro</td>
+            </tr>
+        </tbody>
+    </tabla>
     <EditForm Model="oPermiso">
         <div class="form-group">
             <label>Tipo de permiso</label>
@@ -55,6 +56,7 @@
             <label>Motivo</label>
             <InputTextArea @bind-Value="oPermiso.PermisoMotivo" class="form-control" disabled></InputTextArea>
         </div>
+        <input class="btn btn-danger" value="Eliminar permiso" @onclick="EliminarPermiso" />
     </EditForm>
 </div>
 
@@ -74,5 +76,12 @@
             finalizationTime = Convert.ToDateTime(oPermiso.PermisoFechaFinalizacion).ToString("HH: mm:ss");
 
         }
+    }
+
+    private void EliminarPermiso()
+    {
+        oPermiso.PermisoEliminado = 1;
+        B_Permiso.ActualizarPermiso(oPermiso);
+        NavManager.NavigateTo("permisos/lista");
     }
 }

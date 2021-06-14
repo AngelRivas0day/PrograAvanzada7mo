@@ -28,12 +28,6 @@
 
 @code {
     private bool loggedIn = false;
-    @*protected override async Task OnAfterRenderAsync()
-    {
-        var result = await LocalStorage.GetAsync<string>("nomina");
-        if (result.Success) loggedIn = true;
-        if (!result.Success) loggedIn = false;
-    }*@
     private async void CerrarSesion()
     {
         await LocalStorage.DeleteAsync("nomina");

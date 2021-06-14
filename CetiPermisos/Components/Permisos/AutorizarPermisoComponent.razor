@@ -111,6 +111,6 @@
 
     private void ValidarEstadoPermiso(PermisoEntity permiso)
     {
-        if (permiso.PermisoEstado != "PENDIENTE") puedeEditar = false;
+        if (permiso.PermisoEstado != "PENDIENTE" || permiso.PermisoEliminado == 1) puedeEditar = false;
     }
 }

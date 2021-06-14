@@ -9,6 +9,29 @@
 {
     @if (trabajador.Plaza.PlazaTipo == "fija")
     {
+
+        <div class="table-controls mb-3">
+            <div class="form-group">
+                <label>Tipo de permiso</label>
+                <select class="form-control" @oninput="CambioPermisoTipo">
+                    <option value="">Selecciona una opci&oacute;n</option>
+                    @foreach(var tipo in tiposPermiso)
+                    {
+                        <option value="@tipo">@tipo</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Estado de permiso</label>
+                <select class="form-control" @oninput="CambioPermisoEstado">
+                    <option value="">Selecciona una opci&oacute;n</option>
+                    @foreach (var estado in estadosPermiso)
+                    {
+                        <option value="@estado">@estado</option>
+                    }
+                </select>
+            </div>
+        </div>
         <a href="permisos/crear" class="btn btn-primary">Crear permiso</a>
         <hr />
         <table class="table table-hover table-boder">
@@ -22,46 +45,61 @@
                     <th>Pertenece a</th>
                     <th>Aprobado/Rechazado por</th>
                     <th>Estado</th>
+                    <th>Eliminado</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var permiso in permisos)
+               @foreach (var permiso in tempPermisos)
                 {
-                    <tr>
-                        <th>@permiso.PermisoId</th>
-                        <td>@permiso.PermisoTipo</td>
-                        <td>@permiso.PermisoFechaElaboracion</td>
-                        <td>@permiso.PermisoFechaAplicacion</td>
-                        <td>@permiso.PermisoFechaFinalizacion</td>
-                        <td>@permiso.Trabajador.TrabajadorNombre @permiso.Trabajador.TrabajadorApPaterno</td>
-                        <td>
-                            @if (permiso.JefeInmediatoId > 0)
-                            {
-                                @permiso.JefeInmediato.Trabajador.TrabajadorNombre <span>&nbsp;</span> @permiso.JefeInmediato.Trabajador.TrabajadorApPaterno
-                            }
-                            else
-                            {
-                                <span>-</span>
-                            }
-                        </td>
-                        <td>@permiso.PermisoEstado</td>
-                        <td>
-                            @if (esJefe)
-                            {
-                                <a href="permisos/autorizar/@permiso.PermisoId" class="btn btn-primary">Gestionar</a>
-                            }
-                            else
-                            {
-                                <a href="permisos/detalles/@permiso.PermisoId" class="btn btn-primary">Ver detalles</a>
-                            }
-                        </td>
-                    </tr>
+                <tr class="
+                    @(permiso.PermisoEstado == "PENDIENTE" ? " table-warning " : "");
+                    @(permiso.PermisoEstado == "RECHAZADO" ? " table-danger " : "");
+                    @(permiso.PermisoEstado == "ACEPTADO" ? " table-success " : "");
+                    @(permiso.PermisoEliminado == 1 ? " table-danger " : "");
+                ">
+                    <th>@permiso.PermisoId</th>
+                    <td>@permiso.PermisoTipo</td>
+                    <td>@permiso.PermisoFechaElaboracion</td>
+                    <td>@permiso.PermisoFechaAplicacion</td>
+                    <td>@permiso.PermisoFechaFinalizacion</td>
+                    <td>@permiso.Trabajador.TrabajadorNombre @permiso.Trabajador.TrabajadorApPaterno</td>
+                    <td>
+                       @if (permiso.JefeInmediatoId > 0)
+                        {
+                            @permiso.JefeInmediato.Trabajador.TrabajadorNombre <span>&nbsp;</span> @permiso.JefeInmediato.Trabajador.TrabajadorApPaterno
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                    <td>@permiso.PermisoEstado</td>
+                    <td>
+                       @if (permiso.PermisoEliminado == 1)
+                        {
+                            <span>SI</span>
+                        }
+                        else
+                        {
+                            <span>NO</span>
+                        }
+                    </td>
+                    <td>
+                       @if (esJefe)
+                        {
+                            <a href="permisos/autorizar/@permiso.PermisoId" class="btn btn-primary">Gestionar</a>
+                        }
+                        else
+                        {
+                            <a href="permisos/detalles/@permiso.PermisoId" class="btn btn-primary">Ver detalles</a>
+                        }
+                    </td>
+                </tr>
                 }
-
-
             </tbody>
-        </table>                
+        </table>
+
     }
     else
     {
@@ -82,7 +120,10 @@ else
     public string TipoDeListado { get; set; }
     public bool isLoading = false;
     List<PermisoEntity> permisos = new List<PermisoEntity>();
+    List<PermisoEntity> tempPermisos = new List<PermisoEntity>();
     TrabajadorEntity trabajador = new TrabajadorEntity();
+    private string[] estadosPermiso = { "PENDIENTE", "APROBADO", "RECHAZADO" };
+    private string[] tiposPermiso = { "Economico", "Cumpleanios", "2 horas" };
     bool esJefe = false;
 
     protected override async Task OnInitializedAsync()
@@ -104,6 +145,27 @@ else
         {
             permisos = B_Permiso.PermisosPorTrabajador(trabajador.TrabajadorNomina);
         }
+        tempPermisos = permisos is not null ? permisos : null;
         isLoading = false;
+    }
+
+    private void CambioPermisoTipo(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "")
+        {
+            tempPermisos = permisos;
+            return;
+        }
+        tempPermisos = (permisos.Where(p=>p.PermisoTipo == e.Value.ToString())).ToList();
+    }
+
+    private void CambioPermisoEstado(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "")
+        {
+            tempPermisos = permisos;
+            return;
+        }
+        tempPermisos = (permisos.Where(p=>p.PermisoEstado == e.Value.ToString())).ToList();
     }
 }

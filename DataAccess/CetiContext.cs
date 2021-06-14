@@ -274,7 +274,7 @@ namespace DataAccess
                     TrabajadorEmail = "thora.hirthe@gmail.com",
                     PlantelId = 3,
                     DireccionId = 16,
-                    PlazaId = 1
+                    PlazaId = 2
                 },
                 new TrabajadorEntity
                 {
@@ -326,9 +326,10 @@ namespace DataAccess
                 }
             );
             modelBuilder.Entity<JefeEntity>().HasData(
-                new JefeEntity { JefeId = 1, AcademiaId = 1, TrabajadorId = "836" },
-                new JefeEntity { JefeId = 2, AcademiaId = 2, TrabajadorId = "728" },
-                new JefeEntity { JefeId = 3, AcademiaId = 3, TrabajadorId = "500" }
+                new JefeEntity { JefeId = 1, JefeTotal = 0, AcademiaId = 1, TrabajadorId = "836" },
+                new JefeEntity { JefeId = 2, JefeTotal = 0, AcademiaId = 2, TrabajadorId = "728" },
+                new JefeEntity { JefeId = 3, JefeTotal = 0, AcademiaId = 3, TrabajadorId = "500" },
+                new JefeEntity { JefeId = 4, JefeTotal = 1, AcademiaId = null, TrabajadorId = "669" }
             );
             modelBuilder.Entity<PuestoEntity>().HasData(
                 new PuestoEntity { PuestoId = 1, TrabajadorId = "836", PlazaFechaInicio = new DateTime(2000, 02, 01), AcademiaId = 1 },

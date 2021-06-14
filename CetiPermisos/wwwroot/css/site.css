@@ -56,3 +56,11 @@ a, .btn-link {
     margin: 0 auto;
     width: 90%;
 }
+
+.table-controls{
+    max-width: 500px;
+}
+
+table td, table th{
+    vertical-align: middle !important;
+}

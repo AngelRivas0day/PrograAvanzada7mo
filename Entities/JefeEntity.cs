@@ -11,8 +11,10 @@ namespace Entities
         public int JefeId { get; set; }
 
         [Required]
+        public int JefeTotal { get; set; }
+
         [MaxLength(11)]
-        public int AcademiaId { get; set; }
+        public int? AcademiaId { get; set; }
         public AcademiaEntity Academia { get; set; }
 
         [Required]

@@ -118,6 +118,7 @@ else
             trabajador = B_Trabajador.TrabajadorPorNomina(result.Value.ToString());
             oPermiso.PermisoFechaElaboracion = DateTime.Now;
             oPermiso.PermisoFechaAplicacion = DateTime.Now;
+            oPermiso.PermisoEliminado = 0;
             oPermiso.TrabajadorId = trabajador.TrabajadorNomina;
             applicationTime = hours[0];
             finalizationTime = "09:00";
@@ -257,15 +258,15 @@ else
     {
         DateTime fechaContratacion = B_Trabajador.TrabajadorFechaDeContratacion(Nomina);
         DateTime fechaActual = DateTime.Now;
-        if((fechaActual - fechaContratacion).TotalDays == 90)
+        if((fechaActual - fechaContratacion).TotalDays >= 360)
         {
-            message = "algo";
-            return false;
+            message = null;
+            return true;
         }
         else
         {
-            message = "algo mas";
-            return true;
+            message = "Solo puedes pedir permisos si se ha trabajado más de un año consecutivo.";
+            return false;
         }
     }
 
